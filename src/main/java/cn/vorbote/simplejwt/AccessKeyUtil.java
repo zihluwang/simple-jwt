@@ -1,13 +1,12 @@
 package cn.vorbote.simplejwt;
 
+import cn.vorbote.simplejwt.config.TimeConst;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Another implement of JWT.
@@ -40,29 +39,30 @@ public class AccessKeyUtil {
         this.issuer = issuer;
     }
 
-    private String getSecret() {
+    protected String getSecret() {
         return secret;
     }
 
-    private void setSecret(String secret) {
+    protected void setSecret(String secret) {
         this.secret = secret;
     }
 
-    private String getIssuer() {
+    protected String getIssuer() {
         return issuer;
     }
 
-    private void setIssuer(String issuer) {
+    protected void setIssuer(String issuer) {
         this.issuer = issuer;
     }
 
     /**
      * Create a new Token
+     *
      * @param expireAfter Specify when will the token be expired. (Unit: Second)
-     * @param subject Specify the users will be faced.
-     * @param audience Specify who will receive this token.
-     * @param claims Give some info need to be transformed by token, can be null when
-     *               you dont need to pass any information.
+     * @param subject     Specify the users will be faced.
+     * @param audience    Specify who will receive this token.
+     * @param claims      Give some info need to be transformed by token, can be null when
+     *                    you dont need to pass any information.
      * @return A token string.
      */
     public String CreateToken(int expireAfter, String subject, String audience, Map<String, Object> claims) {
@@ -108,5 +108,20 @@ public class AccessKeyUtil {
      */
     public DecodedJWT Info(String token) {
         return JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+    }
+
+    /**
+     * Renew the token.
+     *
+     * @param token The original token.
+     * @return The renewed token.
+     */
+    public String Renew(String token) {
+        final var info = this.Info(token);
+        final var map = new HashMap<String, Object>();
+        info.getClaims().forEach((k, v) -> {
+            map.put(k, v.asString());
+        });
+        return this.CreateToken(30 * TimeConst.MINUTE, info.getSubject(), info.getAudience().get(0), map);
     }
 }

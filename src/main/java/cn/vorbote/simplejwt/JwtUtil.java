@@ -1,15 +1,9 @@
 package cn.vorbote.simplejwt;
 
-import cn.vorbote.commons.TimeUtil;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * You can use this util to create a simple {@code JSON Web Token}.
@@ -17,7 +11,7 @@ import java.util.UUID;
  * @author vorbote thills@vorbote.cn
  */
 @Slf4j
-public final class JwtUtil {
+public final class JwtUtil extends AccessKeyUtil {
 
     /*
         iss: jwt签发者
@@ -29,9 +23,6 @@ public final class JwtUtil {
         jti: jwt的唯一身份标识，主要用来作为一次性token，从而回避重放攻击。
     */
 
-    private String secret;
-    private String issuer;
-
     /**
      * Create a jwt util instance with your unique secret and the issuer.
      *
@@ -39,24 +30,23 @@ public final class JwtUtil {
      * @param issuer Your (organization's) name.
      */
     public JwtUtil(String secret, String issuer) {
-        this.secret = secret;
-        this.issuer = issuer;
+        super(secret, issuer);
     }
 
-    private String getSecret() {
-        return secret;
+    protected String getSecret() {
+        return super.getSecret();
     }
 
-    private void setSecret(String secret) {
-        this.secret = secret;
+    protected void setSecret(String secret) {
+        super.setSecret(secret);
     }
 
-    private String getIssuer() {
-        return issuer;
+    protected String getIssuer() {
+        return super.getIssuer();
     }
 
-    private void setIssuer(String issuer) {
-        this.issuer = issuer;
+    protected void setIssuer(String issuer) {
+        super.setIssuer(issuer);
     }
 
     /**
@@ -69,27 +59,7 @@ public final class JwtUtil {
      * @return A token string.
      */
     public String CreateToken(int expireAfter, String subject, String audience, Map<String, Object> claims) {
-        var calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, expireAfter); // 设置多少秒后失效
-
-        final var builder = JWT.create();
-        if (claims != null) {
-            claims.forEach((k, v) -> {
-                builder.withClaim(k, v.toString());
-            });
-        }
-
-        Date now = new Date();
-
-        builder.withIssuer(issuer);
-        builder.withIssuedAt(now);
-        builder.withNotBefore(now);
-        builder.withAudience(audience);
-        builder.withSubject(subject);
-        builder.withExpiresAt(calendar.getTime());
-        builder.withJWTId(UUID.randomUUID().toString());
-
-        return builder.sign(Algorithm.HMAC512(secret));
+        return super.CreateToken(expireAfter, subject, audience, claims);
     }
 
     /**
@@ -100,7 +70,7 @@ public final class JwtUtil {
      * @param token The token.
      */
     public void Verify(String token) {
-        JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+        super.Verify(token);
     }
 
     /**
@@ -110,7 +80,17 @@ public final class JwtUtil {
      * @return The decoded jwt token.
      */
     public DecodedJWT Info(String token) {
-        return JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+        return super.Info(token);
+    }
+
+    /**
+     * Renew the token.
+     *
+     * @param token The original token.
+     * @return The renewed token.
+     */
+    public String Renew(String token) {
+        return super.Renew(token);
     }
 
 }
