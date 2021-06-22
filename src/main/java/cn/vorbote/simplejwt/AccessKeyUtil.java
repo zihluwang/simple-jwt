@@ -71,9 +71,9 @@ public class AccessKeyUtil {
 
         final var builder = JWT.create();
         if (claims != null) {
-            claims.forEach((k, v) -> {
-                builder.withClaim(k, v.toString());
-            });
+            for (Map.Entry<String, Object> e : claims.entrySet()) {
+                builder.withClaim(e.getKey(), e.getValue().toString());
+            }
         }
 
         Date now = new Date();
@@ -119,9 +119,13 @@ public class AccessKeyUtil {
     public String Renew(String token) {
         final var info = this.Info(token);
         final var map = new HashMap<String, Object>();
-        info.getClaims().forEach((k, v) -> {
-            map.put(k, v.asString());
-        });
+        // Exclude some specific keys.
+        var keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
+        for (Map.Entry<String, Claim> e : info.getClaims().entrySet()) {
+            if (!keys.contains(e.getKey())) {
+                map.put(e.getKey(), e.getValue().asString());
+            }
+        }
         return this.CreateToken(30 * TimeConst.MINUTE, info.getSubject(), info.getAudience().get(0), map);
     }
 }
