@@ -12,13 +12,23 @@
 
     <groupId>cn.vorbote</groupId>
     <artifactId>simple-jwt</artifactId>
-    <version>1.0.2</version>
+    <version>${project.version}</version>
     <url>https://plugins.vorbote.cn/</url>
 
     <name>VorBotE :: SimpleJWT</name>
     <description>
         A simple util of jwt implementation.
     </description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.version>2.0.0.RELEASE</project.version>
+        <junit.version>4.13.2</junit.version>
+        <jwt.version>3.18.1</jwt.version>
+        <commons.version>2.0.0.RELEASE</commons.version>
+        <time-lib.version>2.0.0.RELEASE</time-lib.version>
+    </properties>
 
     <developers>
         <developer>
@@ -44,71 +54,29 @@
         <developerConnection>https://github.com/vorbote/simple-jwt</developerConnection>
     </scm>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <lombok>1.18.20</lombok>
-        <slf4j>1.7.30</slf4j>
-        <logback>1.2.3</logback>
-        <jwt>3.4.0</jwt>
-        <vorbote-commons>1.5.3</vorbote-commons>
-        <junit>4.13.1</junit>
-    </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>${jwt}</version>
+            <version>${jwt.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>commons</artifactId>
-            <version>${vorbote-commons}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>${commons.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.vorbote</groupId>
+            <artifactId>time-lib</artifactId>
+            <version>${time-lib.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit}</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

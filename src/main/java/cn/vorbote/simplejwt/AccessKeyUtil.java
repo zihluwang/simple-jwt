@@ -1,6 +1,7 @@
 package cn.vorbote.simplejwt;
 
-import cn.vorbote.simplejwt.config.TimeConst;
+import cn.vorbote.commons.enums.TimeUnit;
+import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
@@ -9,10 +10,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.*;
 
 /**
- * Another implement of JWT.
+ * JWT Token implementation, easy to use.
  *
  * @author vorbote thills@vorbote.cn
- * @see JwtUtil
  */
 public class AccessKeyUtil {
     /*
@@ -62,12 +62,12 @@ public class AccessKeyUtil {
      * @param subject     Specify the users will be faced.
      * @param audience    Specify who will receive this token.
      * @param claims      Give some info need to be transformed by token, can be null when
-     *                    you dont need to pass any information.
+     *                    you don't need to pass any information.
      * @return A token string.
      */
     public String CreateToken(int expireAfter, String subject, String audience, Map<String, Object> claims) {
-        var calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, expireAfter); // 设置多少秒后失效
+        var expire = DateTime.Now();
+        expire.AddSeconds(expireAfter);
 
         final var builder = JWT.create();
         if (claims != null) {
@@ -76,14 +76,14 @@ public class AccessKeyUtil {
             }
         }
 
-        Date now = new Date();
+        var now = DateTime.Now();
 
         builder.withIssuer(issuer);
-        builder.withIssuedAt(now);
-        builder.withNotBefore(now);
+        builder.withIssuedAt(now.ToDate());
+        builder.withNotBefore(now.ToDate());
         builder.withAudience(audience);
         builder.withSubject(subject);
-        builder.withExpiresAt(calendar.getTime());
+        builder.withExpiresAt(expire.ToDate());
         builder.withJWTId(UUID.randomUUID().toString());
 
         return builder.sign(Algorithm.HMAC512(secret));
@@ -101,7 +101,7 @@ public class AccessKeyUtil {
     }
 
     /**
-     * Decode the token and you can easily get some info from this token.
+     * Decode the token, and you can easily get some info from this token.
      *
      * @param token The token.
      * @return The decoded jwt token.
@@ -126,6 +126,6 @@ public class AccessKeyUtil {
                 map.put(e.getKey(), e.getValue().asString());
             }
         }
-        return this.CreateToken(30 * TimeConst.MINUTE, info.getSubject(), info.getAudience().get(0), map);
+        return this.CreateToken(30 * TimeUnit.MINUTE.Second(), info.getSubject(), info.getAudience().get(0), map);
     }
 }
