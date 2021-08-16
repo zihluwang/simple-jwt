@@ -23,7 +23,7 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <project.version>2.0.0.RELEASE</project.version>
+        <project.version>2.0.1.RELEASE</project.version>
         <junit.version>4.13.2</junit.version>
         <jwt.version>3.18.1</jwt.version>
         <commons.version>2.0.0.RELEASE</commons.version>
@@ -69,6 +69,12 @@
 
         <dependency>
             <groupId>cn.vorbote</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.vorbote</groupId>
             <artifactId>time-lib</artifactId>
             <version>${time-lib.version}</version>
         </dependency>
@@ -109,7 +115,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- Javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -122,8 +127,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- GPG -->
-                    <plugin> <!-- 进行延签 -->
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.5</version>

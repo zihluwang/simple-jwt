@@ -1,5 +1,6 @@
 package cn.vorbote.simplejwt;
 
+import cn.vorbote.common.utils.MapUtil;
 import cn.vorbote.commons.enums.TimeUnit;
 import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
@@ -7,7 +8,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * JWT Token implementation, easy to use.
@@ -90,7 +94,7 @@ public class AccessKeyUtil {
     }
 
     /**
-     * Check whether the token is valid. This method will happens
+     * Check whether the token is valid. This method will happen
      * nothing when the token is valid, or throw some exception
      * when token is invalid.
      *
@@ -101,7 +105,8 @@ public class AccessKeyUtil {
     }
 
     /**
-     * Decode the token, and you can easily get some info from this token.
+     * Decode the token, and you can easily get some info from
+     * this token.
      *
      * @param token The token.
      * @return The decoded jwt token.
@@ -121,11 +126,46 @@ public class AccessKeyUtil {
         final var map = new HashMap<String, Object>();
         // Exclude some specific keys.
         var keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
-        for (Map.Entry<String, Claim> e : info.getClaims().entrySet()) {
+        for (var e : info.getClaims().entrySet()) {
             if (!keys.contains(e.getKey())) {
                 map.put(e.getKey(), e.getValue().asString());
             }
         }
-        return this.CreateToken(30 * TimeUnit.MINUTE.Second(), info.getSubject(), info.getAudience().get(0), map);
+        return CreateToken(30 * TimeUnit.MINUTE.Second(),
+                info.getSubject(), info.getAudience().get(0), map);
+    }
+
+    /**
+     * Get the bean in the token. In this method, you have to
+     * make sure that your stored info is in the format of
+     * key-value pair and which is stored in the claims. And
+     * the key must be the same with that field in the required
+     * type (such as the field name in required is declared as
+     * {@code private String name;}, then your key must be
+     * {@code name}). Meanwhile, the setter for this field is
+     * required either.
+     *
+     * @param token The user token.
+     * @param requiredType The class of user.
+     * @return The user bean.
+     * @throws Exception All exceptions will be generated in this method.
+     */
+    public <T> T GetBean(String token, Class<T> requiredType)
+            throws Exception {
+        // 创建token的解析对象
+        var tokenInfo = Info(token).getClaims();
+
+        // 获取默认无参构造并创建对象
+        var bean = requiredType.getConstructor().newInstance();
+
+        var fields = requiredType.getDeclaredFields();
+        for (var field : fields) {
+            var fieldName = field.getName();
+            // 根据名字创建属性并设置值
+            var fieldValue = tokenInfo.get(fieldName).asString();
+            MapUtil.SetFieldValue(fieldName, bean, fieldValue);
+        }
+
+        return bean;
     }
 }
