@@ -2,6 +2,7 @@ package cn.vorbote.simplejwt;
 
 import cn.vorbote.common.utils.MapUtil;
 import cn.vorbote.commons.enums.TimeUnit;
+import cn.vorbote.commons.except.UnsupportedDataTypeException;
 import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -95,15 +96,19 @@ public class AccessKeyUtil {
     /**
      * Create a new Token by the specified bean object.
      *
-     * @param expireAfter Specify when will the token be expired. (Unit: Second)
-     * @param subject     Specify the users will be faced.
-     * @param audience    Specify who will receive this token.
-     * @param bean        Give some info need to be transformed by token, can be null when
-     *                    you don't need to pass any information.
+     * @param requiredType Specify that this method only supported bean type.
+     * @param expireAfter  Specify when will the token be expired. (Unit: Second)
+     * @param subject      Specify the users will be faced.
+     * @param audience     Specify who will receive this token.
+     * @param bean         Give some info need to be transformed by token, can be null when
+     *                     you don't need to pass any information.
      * @return A token string.
      */
-    public <T> String CreateTokenWithUserInstance(int expireAfter, String subject, String audience, T bean)
+    public <T> String CreateToken(Class<T> requiredType, int expireAfter, String subject, String audience, T bean)
             throws Exception {
+        if (!bean.getClass().getName().equalsIgnoreCase(requiredType.getName())) {
+            throw new UnsupportedDataTypeException("The method expects a " + requiredType.getName() + " but get a " + bean.getClass().getName());
+        }
         var dict = MapUtil.SetMap(bean);
         return CreateToken(expireAfter, subject, audience, dict);
     }
@@ -136,7 +141,7 @@ public class AccessKeyUtil {
      * @param token The original token.
      * @return The renewed token.
      */
-    public String Renew(String token) {
+    public String Renew(String token, int expireAfter) {
         final var info = this.Info(token);
         final var map = new HashMap<String, Object>();
         // Exclude some specific keys.
@@ -146,8 +151,7 @@ public class AccessKeyUtil {
                 map.put(e.getKey(), e.getValue().asString());
             }
         }
-        return CreateToken(30 * TimeUnit.MINUTE.Second(),
-                info.getSubject(), info.getAudience().get(0), map);
+        return CreateToken(expireAfter, info.getSubject(), info.getAudience().get(0), map);
     }
 
     /**
@@ -178,7 +182,7 @@ public class AccessKeyUtil {
             var fieldName = field.getName();
             // 根据名字创建属性并设置值
             var fieldValue = tokenInfo.get(fieldName).asString();
-            MapUtil.SetFieldValue(fieldName, bean, fieldValue);
+            MapUtil.SetFieldValue(bean, fieldName, fieldValue);
         }
 
         return bean;

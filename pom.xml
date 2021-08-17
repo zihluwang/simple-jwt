@@ -4,6 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <junit.version>4.13.2</junit.version>
+        <jwt.version>3.18.1</jwt.version>
+
+        <!--由cn.vorbote开发的插件-->
+        <project.version>2.0.2.RELEASE</project.version>
+        <commons.version>2.0.0.RELEASE</commons.version>
+        <time-lib.version>2.0.0.RELEASE</time-lib.version>
+        <common-utils.version>2.0.1.RELEASE</common-utils.version>
+    </properties>
+
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -20,18 +33,7 @@
         A simple util of jwt implementation.
     </description>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <junit.version>4.13.2</junit.version>
-        <jwt.version>3.18.1</jwt.version>
-
-        <!--由cn.vorbote开发的插件-->
-        <project.version>2.0.1.RELEASE</project.version>
-        <commons.version>2.0.0.RELEASE</commons.version>
-        <time-lib.version>2.0.0.RELEASE</time-lib.version>
-        <common-utils.version>2.0.0.RELEASE</common-utils.version>
-    </properties>
+    <packaging>jar</packaging>
 
     <developers>
         <developer>
@@ -40,8 +42,6 @@
             <url>https://vorbote.cn</url>
         </developer>
     </developers>
-
-    <packaging>jar</packaging>
 
     <licenses>
         <license>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>common-utils</artifactId>
-            <version>${commons.version}</version>
+            <version>${common-utils.version}</version>
         </dependency>
 
         <dependency>
