@@ -5,7 +5,6 @@ import cn.vorbote.commons.enums.TimeUnit;
 import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.Arrays;
@@ -94,6 +93,22 @@ public class AccessKeyUtil {
     }
 
     /**
+     * Create a new Token by the specified bean object.
+     *
+     * @param expireAfter Specify when will the token be expired. (Unit: Second)
+     * @param subject     Specify the users will be faced.
+     * @param audience    Specify who will receive this token.
+     * @param bean        Give some info need to be transformed by token, can be null when
+     *                    you don't need to pass any information.
+     * @return A token string.
+     */
+    public <T> String CreateTokenWithUserInstance(int expireAfter, String subject, String audience, T bean)
+            throws Exception {
+        var dict = MapUtil.SetMap(bean);
+        return CreateToken(expireAfter, subject, audience, dict);
+    }
+
+    /**
      * Check whether the token is valid. This method will happen
      * nothing when the token is valid, or throw some exception
      * when token is invalid.
@@ -145,7 +160,7 @@ public class AccessKeyUtil {
      * {@code name}). Meanwhile, the setter for this field is
      * required either.
      *
-     * @param token The user token.
+     * @param token        The user token.
      * @param requiredType The class of user.
      * @return The user bean.
      * @throws Exception All exceptions will be generated in this method.
