@@ -23,11 +23,14 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <project.version>2.0.1.RELEASE</project.version>
         <junit.version>4.13.2</junit.version>
         <jwt.version>3.18.1</jwt.version>
+
+        <!--由cn.vorbote开发的插件-->
+        <project.version>2.0.1.RELEASE</project.version>
         <commons.version>2.0.0.RELEASE</commons.version>
         <time-lib.version>2.0.0.RELEASE</time-lib.version>
+        <common-utils.version>2.0.0.RELEASE</common-utils.version>
     </properties>
 
     <developers>
