@@ -55,10 +55,10 @@ public class AccessKeyUtil {
         return algorithm;
     }
 
-    public AccessKeyUtil(@NonNull JwtAlgorithm algorithm, String secret, String issuer) {
+    public AccessKeyUtil(@NonNull JwtAlgorithm algorithm, @NonNull String secret, @NonNull String issuer) {
         this.algorithm = algorithm;
-        this.secret = "".concat(secret);
-        this.issuer = "".concat(issuer);
+        this.secret = secret;
+        this.issuer = issuer;
     }
 
     /**
@@ -126,8 +126,7 @@ public class AccessKeyUtil {
     public <T> String CreateToken(Class<T> requiredType, int expireAfter, String subject, String audience, T bean)
             throws Exception {
         var requiredTypeName = requiredType.getName();
-        // 拼接空字符串防止字符串为null
-        var gotTypeName = "".concat(bean.getClass().getName());
+        var gotTypeName = bean.getClass().getName();
         if (!gotTypeName.equalsIgnoreCase(requiredTypeName)) {
             throw new UnsupportedDataTypeException(StringUtil.Format("The method expects a {} but get a {}.", requiredTypeName, gotTypeName));
         }
