@@ -1,12 +1,15 @@
 package cn.vorbote.simplejwt;
 
 import cn.vorbote.common.utils.MapUtil;
+import cn.vorbote.commons.consts.JwtAlgorithm;
 import cn.vorbote.commons.enums.TimeUnit;
 import cn.vorbote.commons.except.UnsupportedDataTypeException;
 import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +21,8 @@ import java.util.UUID;
  *
  * @author vorbote thills@vorbote.cn
  */
+@Slf4j
+@AllArgsConstructor
 public class AccessKeyUtil {
     /*
         iss: jwt签发者
@@ -31,17 +36,7 @@ public class AccessKeyUtil {
 
     private String secret;
     private String issuer;
-
-    /**
-     * Create a jwt util instance with your unique secret and the issuer.
-     *
-     * @param secret The secret value.
-     * @param issuer Your (organization's) name.
-     */
-    public AccessKeyUtil(String secret, String issuer) {
-        this.secret = secret;
-        this.issuer = issuer;
-    }
+    private final JwtAlgorithm algorithm;
 
     protected String getSecret() {
         return secret;
@@ -90,7 +85,24 @@ public class AccessKeyUtil {
         builder.withExpiresAt(expire.ToDate());
         builder.withJWTId(UUID.randomUUID().toString());
 
-        return builder.sign(Algorithm.HMAC512(secret));
+        var token = "";
+
+        switch (algorithm) {
+            case HS256:
+                token = builder.sign(Algorithm.HMAC256(secret));
+                break;
+            case HS384:
+                token = builder.sign(Algorithm.HMAC384(secret));
+                break;
+            case HS512:
+                token = builder.sign(Algorithm.HMAC512(secret));
+                break;
+            default:
+                token = builder.sign(Algorithm.HMAC256(secret));
+                log.error("This algorithm is not supported yet, will use HMAC256 by default.");
+        }
+
+        return token;
     }
 
     /**
