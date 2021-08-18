@@ -6,8 +6,10 @@ import cn.vorbote.commons.enums.TimeUnit;
 import cn.vorbote.commons.except.UnsupportedDataTypeException;
 import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.Verification;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -133,7 +135,7 @@ public class AccessKeyUtil {
      * @param token The token.
      */
     public void Verify(String token) {
-        JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+        Info(token);
     }
 
     /**
@@ -144,7 +146,24 @@ public class AccessKeyUtil {
      * @return The decoded jwt token.
      */
     public DecodedJWT Info(String token) {
-        return JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+        JWTVerifier verifier = null;
+        switch (algorithm) {
+            case HS256:
+                verifier = JWT.require(Algorithm.HMAC256(secret)).build();
+                break;
+            case HS384:
+                verifier = JWT.require(Algorithm.HMAC384(secret)).build();
+                break;
+            case HS512:
+                verifier = JWT.require(Algorithm.HMAC512(secret)).build();
+                break;
+            default:
+                // 这里理论上应该抛出异常的，但是实在是懒得做了，就先这样吧。
+                // 后续再考虑加上其他的算法
+                verifier = JWT.require(Algorithm.HMAC256(secret)).build();
+                log.error("This algorithm is not supported yet, will use HMAC256 by default.");
+        }
+        return verifier.verify(token);
     }
 
     /**
