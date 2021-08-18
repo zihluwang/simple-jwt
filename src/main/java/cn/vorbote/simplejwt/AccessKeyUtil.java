@@ -34,9 +34,9 @@ public class AccessKeyUtil {
         jti: jwt的唯一身份标识，主要用来作为一次性token，从而回避重放攻击。
     */
 
+    private final JwtAlgorithm algorithm;
     private String secret;
     private String issuer;
-    private final JwtAlgorithm algorithm;
 
     protected String getSecret() {
         return secret;
