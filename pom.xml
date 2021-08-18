@@ -13,7 +13,7 @@
         <!--由cn.vorbote开发的插件-->
         <project.version>2.0.3.RELEASE</project.version>
         <commons.version>2.0.2.RELEASE</commons.version>
-        <time-lib.version>2.0.0.RELEASE</time-lib.version>
+        <time-lib.version>2.0.2.RELEASE</time-lib.version>
         <common-utils.version>2.0.1.RELEASE</common-utils.version>
     </properties>
 
