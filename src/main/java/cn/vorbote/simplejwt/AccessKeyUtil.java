@@ -1,22 +1,18 @@
 package cn.vorbote.simplejwt;
 
 import cn.vorbote.common.utils.MapUtil;
-import cn.vorbote.commons.consts.JwtAlgorithm;
-import cn.vorbote.commons.enums.TimeUnit;
+import cn.vorbote.common.utils.StringUtil;
+import cn.vorbote.commons.enums.JwtAlgorithm;
 import cn.vorbote.commons.except.UnsupportedDataTypeException;
 import cn.vorbote.time.DateTime;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * JWT Token implementation, easy to use.
@@ -24,7 +20,6 @@ import java.util.UUID;
  * @author vorbote thills@vorbote.cn
  */
 @Slf4j
-@AllArgsConstructor
 public class AccessKeyUtil {
     /*
         iss: jwt签发者
@@ -54,6 +49,16 @@ public class AccessKeyUtil {
 
     protected void setIssuer(String issuer) {
         this.issuer = issuer;
+    }
+
+    protected JwtAlgorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public AccessKeyUtil(@NonNull JwtAlgorithm algorithm, String secret, String issuer) {
+        this.algorithm = algorithm;
+        this.secret = "".concat(secret);
+        this.issuer = "".concat(issuer);
     }
 
     /**
@@ -120,9 +125,13 @@ public class AccessKeyUtil {
      */
     public <T> String CreateToken(Class<T> requiredType, int expireAfter, String subject, String audience, T bean)
             throws Exception {
-        if (!bean.getClass().getName().equalsIgnoreCase(requiredType.getName())) {
-            throw new UnsupportedDataTypeException("The method expects a " + requiredType.getName() + " but get a " + bean.getClass().getName());
+        var requiredTypeName = requiredType.getName();
+        // 拼接空字符串防止字符串为null
+        var gotTypeName = "".concat(bean.getClass().getName());
+        if (!gotTypeName.equalsIgnoreCase(requiredTypeName)) {
+            throw new UnsupportedDataTypeException(StringUtil.Format("The method expects a {} but get a {}.", requiredTypeName, gotTypeName));
         }
+        // 将bean转换为Map
         var dict = MapUtil.SetMap(bean);
         return CreateToken(expireAfter, subject, audience, dict);
     }
@@ -159,7 +168,7 @@ public class AccessKeyUtil {
                 break;
             default:
                 // 这里理论上应该抛出异常的，但是实在是懒得做了，就先这样吧。
-                // 后续再考虑加上其他的算法
+                // 至于其他的算法，后续再考虑加上。
                 verifier = JWT.require(Algorithm.HMAC256(secret)).build();
                 log.error("This algorithm is not supported yet, will use HMAC256 by default.");
         }
@@ -175,7 +184,7 @@ public class AccessKeyUtil {
     public String Renew(String token, int expireAfter) {
         final var info = this.Info(token);
         final var map = new HashMap<String, Object>();
-        // Exclude some specific keys.
+        // 排除一些JWT已经定义好用处的字段
         var keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
         for (var e : info.getClaims().entrySet()) {
             if (!keys.contains(e.getKey())) {
