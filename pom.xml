@@ -11,10 +11,7 @@
         <jwt.version>3.18.1</jwt.version>
 
         <!--由cn.vorbote开发的插件-->
-        <project.version>2.0.3.RELEASE</project.version>
-        <commons.version>2.0.2.RELEASE</commons.version>
-        <time-lib.version>2.0.2.RELEASE</time-lib.version>
-        <common-utils.version>2.0.1.RELEASE</common-utils.version>
+        <project.version>2.0.4.RELEASE</project.version>
     </properties>
 
     <parent>
@@ -75,19 +72,19 @@
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>commons</artifactId>
-            <version>${commons.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>common-utils</artifactId>
-            <version>${common-utils.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>time-lib</artifactId>
-            <version>${time-lib.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--由cn.vorbote开发的插件-->
     </dependencies>
