@@ -327,7 +327,8 @@ public class AccessKeyUtil {
     }
 
     /**
-     * Renew this token with the data in the bean.
+     * Renew this token with the data in the bean. This method will auto distract
+     * the data needed by required type.
      *
      * @param token        The original token.
      * @param expireAfter  Expire after this time.
