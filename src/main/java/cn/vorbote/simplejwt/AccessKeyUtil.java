@@ -2,6 +2,7 @@ package cn.vorbote.simplejwt;
 
 import cn.vorbote.common.utils.MapUtil;
 import cn.vorbote.commons.enums.JwtAlgorithm;
+import cn.vorbote.simplejwt.annotations.JwtIgnore;
 import cn.vorbote.time.DateTime;
 import cn.vorbote.time.TimeSpan;
 import com.auth0.jwt.JWT;
@@ -195,6 +196,8 @@ public class AccessKeyUtil {
         var beanClass = bean.getClass();
         var fields = beanClass.getDeclaredFields();
         for (var field : fields) {
+            if (field.isAnnotationPresent(JwtIgnore.class))
+                continue;
             field.setAccessible(true);
             var fieldName = field.getName();
             var fieldValue = field.get(bean);
