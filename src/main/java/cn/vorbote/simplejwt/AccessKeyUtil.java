@@ -360,7 +360,9 @@ public class AccessKeyUtil {
      * type (such as the field name in required is declared as
      * {@code private String name;}, then your key must be
      * {@code name}). Meanwhile, the setter for this field is
-     * required either.
+     * required either. Be advised, the field log and logger
+     * is thought as a helper field, thus, it will not be put
+     * into the token.
      *
      * @param token        The user token.
      * @param requiredType The class of user.
@@ -387,9 +389,17 @@ public class AccessKeyUtil {
             if (field.isAnnotationPresent(JwtIgnore.class))
                 continue;
             var fieldName = field.getName();
+            if (fieldName.equalsIgnoreCase("log") || fieldName.equalsIgnoreCase("logger"))
+                continue;
             // 根据名字创建属性并设置值
-            Object fieldValue = tokenInfo.get(fieldName).as(field.getType());
-            MapUtil.SetFieldValue(bean, fieldName, fieldValue);
+            Object fieldValue = Optional.ofNullable(tokenInfo.get(fieldName))
+                    .map(claim -> claim.as(field.getType()))
+                    .orElse(null);
+            if (fieldValue != null) {
+                log.debug("为{}注入数据：{}", fieldName, fieldValue);
+                log.debug("数据值：{}，数据类型：{}", fieldValue, fieldValue.getClass());
+                MapUtil.SetFieldValue(bean, fieldName, fieldValue);
+            }
         }
 
         return bean;
