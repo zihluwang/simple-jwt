@@ -384,6 +384,8 @@ public class AccessKeyUtil {
 
         var fields = requiredType.getDeclaredFields();
         for (var field : fields) {
+            if (field.isAnnotationPresent(JwtIgnore.class))
+                continue;
             var fieldName = field.getName();
             // 根据名字创建属性并设置值
             Object fieldValue = tokenInfo.get(fieldName).as(field.getType());
