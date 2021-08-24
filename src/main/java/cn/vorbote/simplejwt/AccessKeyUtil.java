@@ -386,7 +386,7 @@ public class AccessKeyUtil {
         for (var field : fields) {
             var fieldName = field.getName();
             // 根据名字创建属性并设置值
-            var fieldValue = tokenInfo.get(fieldName).asString();
+            Object fieldValue = tokenInfo.get(fieldName).as(field.getType());
             MapUtil.SetFieldValue(bean, fieldName, fieldValue);
         }
 
