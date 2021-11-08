@@ -11,7 +11,7 @@
         <jwt.version>3.18.1</jwt.version>
 
         <!--由cn.vorbote开发的插件-->
-        <project.version>2.3.0</project.version>
+        <project.version>2.4.0</project.version>
     </properties>
 
     <parent>
