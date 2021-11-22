@@ -137,7 +137,7 @@ public class AccessKeyUtil {
      */
     @Deprecated
     public String CreateToken(int expireAfter, String subject, String[] audience, Map<String, Object> claims) {
-        var expire = new TimeSpan(0, 0, 0, expireAfter, 0);
+        var expire = new TimeSpan(0, 0, 0, expireAfter);
         final var builder = JWT.create();
 
         buildClaims(claims, builder);
@@ -301,7 +301,7 @@ public class AccessKeyUtil {
             }
         }
 
-        var expireTimeSpan = new TimeSpan(0, 0, 0, expireAfter, 0);
+        var expireTimeSpan = new TimeSpan(0, 0, 0, expireAfter);
         var audiencesList = info.getAudience();
         var audiences = audiencesList.toArray(new String[0]);
 
