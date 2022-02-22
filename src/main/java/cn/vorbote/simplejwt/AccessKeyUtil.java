@@ -374,7 +374,7 @@ public class AccessKeyUtil {
      * @see Class#getDeclaredFields()
      * @see java.lang.reflect.Constructor#newInstance(Object...)
      * @see Map#get(Object)
-     * @see MapUtil#SetFieldValue(Object, String, Object)
+     * @see MapUtil#setFieldValue(Object, String, Object)
      */
     public <T> T GetBean(String token, Class<T> requiredType)
             throws Exception {
@@ -398,7 +398,7 @@ public class AccessKeyUtil {
             if (fieldValue != null) {
                 log.debug("为{}注入数据：{}", fieldName, fieldValue);
                 log.debug("数据值：{}，数据类型：{}", fieldValue, fieldValue.getClass());
-                MapUtil.SetFieldValue(bean, fieldName, fieldValue);
+                MapUtil.setFieldValue(bean, fieldName, fieldValue);
             }
         }
 
