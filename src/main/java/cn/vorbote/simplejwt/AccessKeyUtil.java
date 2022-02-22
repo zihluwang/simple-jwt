@@ -1,8 +1,8 @@
 package cn.vorbote.simplejwt;
 
 import cn.vorbote.common.utils.MapUtil;
-import cn.vorbote.commons.enums.JwtAlgorithm;
 import cn.vorbote.simplejwt.annotations.JwtIgnore;
+import cn.vorbote.simplejwt.choices.JwtAlgorithm;
 import cn.vorbote.time.DateTime;
 import cn.vorbote.time.TimeSpan;
 import com.auth0.jwt.JWT;
@@ -263,7 +263,7 @@ public class AccessKeyUtil {
      * @see JWTVerifier#verify(String)
      */
     public DecodedJWT Info(String token) {
-        JWTVerifier verifier = null;
+        JWTVerifier verifier;
         switch (algorithm) {
             case HS256:
                 verifier = JWT.require(Algorithm.HMAC256(secret)).build();
