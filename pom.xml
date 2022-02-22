@@ -8,10 +8,10 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <junit.version>4.13.2</junit.version>
-        <jwt.version>3.18.1</jwt.version>
+        <jwt.version>3.18.3</jwt.version>
 
         <!--由cn.vorbote开发的插件-->
-        <project.version>2.6.0</project.version>
+        <project.version>3.0.0</project.version>
     </properties>
 
     <parent>
@@ -30,31 +30,13 @@
         A simple util of jwt implementation.
     </description>
 
-    <packaging>jar</packaging>
-
-    <developers>
-        <developer>
-            <name>Theodore Hills</name>
-            <email>theodore0126@vorbote.cn</email>
-            <url>https://vorbote.cn</url>
-        </developer>
-    </developers>
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version2.0</name>
-            <url>https://www.apache.org/licenses/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <url>https://github.com/vorbote/simple-jwt</url>
-        <connection>https://github.com/vorbote/simple-jwt.git</connection>
-        <developerConnection>https://github.com/vorbote/simple-jwt</developerConnection>
-    </scm>
-
     <dependencies>
+        <dependency>
+            <groupId>cn.vorbote</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -67,27 +49,31 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!--由cn.vorbote开发的插件-->
-        <dependency>
-            <groupId>cn.vorbote</groupId>
-            <artifactId>commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.vorbote</groupId>
-            <artifactId>common-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.vorbote</groupId>
-            <artifactId>time-lib</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!--由cn.vorbote开发的插件-->
     </dependencies>
+
+    <packaging>jar</packaging>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version2.0</name>
+            <url>https://www.apache.org/licenses/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/vorbote/commons</url>
+        <connection>https://github.com/vorbote/commons.git</connection>
+        <developerConnection>https://github.com/vorbote/commons</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Theodore Hills</name>
+            <email>theodore0126@vorbote.cn</email>
+            <url>https://vorbote.cn</url>
+        </developer>
+    </developers>
 
     <distributionManagement>
         <snapshotRepository>
@@ -108,6 +94,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -120,6 +107,10 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.3.2</version>
+                        <configuration>
+                            <locale>en_GB</locale>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -142,6 +133,15 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>*.xml</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
             <distributionManagement>
@@ -156,5 +156,61 @@
             </distributionManagement>
         </profile>
     </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <locale>en_GB</locale>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>*.xml</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
