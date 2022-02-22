@@ -4,6 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <developers>
+        <developer>
+            <name>Theodore Hills</name>
+            <email>theodore0126@vorbote.cn</email>
+            <url>https://vorbote.cn</url>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version2.0</name>
+            <url>https://www.apache.org/licenses/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/vorbote/commons</url>
+        <connection>https://github.com/vorbote/commons.git</connection>
+        <developerConnection>https://github.com/vorbote/commons</developerConnection>
+    </scm>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -52,28 +74,6 @@
     </dependencies>
 
     <packaging>jar</packaging>
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version2.0</name>
-            <url>https://www.apache.org/licenses/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <url>https://github.com/vorbote/commons</url>
-        <connection>https://github.com/vorbote/commons.git</connection>
-        <developerConnection>https://github.com/vorbote/commons</developerConnection>
-    </scm>
-
-    <developers>
-        <developer>
-            <name>Theodore Hills</name>
-            <email>theodore0126@vorbote.cn</email>
-            <url>https://vorbote.cn</url>
-        </developer>
-    </developers>
 
     <distributionManagement>
         <snapshotRepository>
