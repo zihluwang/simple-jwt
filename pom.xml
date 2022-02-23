@@ -55,7 +55,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.vorbote</groupId>
-            <artifactId>common-utils</artifactId>
+            <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
