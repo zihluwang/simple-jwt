@@ -1,10 +1,10 @@
 package cn.vorbote.simplejwt;
 
-import cn.vorbote.common.utils.MapUtil;
+import cn.vorbote.core.time.DateTime;
+import cn.vorbote.core.time.TimeSpan;
+import cn.vorbote.core.utils.MapUtil;
 import cn.vorbote.simplejwt.annotations.JwtIgnore;
 import cn.vorbote.simplejwt.choices.JwtAlgorithm;
-import cn.vorbote.time.DateTime;
-import cn.vorbote.time.TimeSpan;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
@@ -68,18 +68,18 @@ public class AccessKeyUtil {
      * @param subject  The subject of this jwt.
      * @param audience The audiences of this jwt.
      * @param expire   The jwt will expire after this time period.
-     * @param builder  The JWT's builder.
+     * @param builder  The builder of this jwt.
      */
     private void buildBasicInfo(String subject, String[] audience, TimeSpan expire, JWTCreator.Builder builder) {
-        var now = DateTime.Now();
+        var now = DateTime.now();
 
         builder.withIssuer(issuer);
-        builder.withIssuedAt(now.ToDate());
-        builder.withNotBefore(now.ToDate());
+        builder.withIssuedAt(now.toDate());
+        builder.withNotBefore(now.toDate());
         builder.withAudience(audience);
         builder.withSubject(subject);
-        now.Add(expire);
-        builder.withExpiresAt(now.ToDate());
+        now.add(expire);
+        builder.withExpiresAt(now.toDate());
         builder.withJWTId(UUID.randomUUID().toString());
     }
 
@@ -221,7 +221,7 @@ public class AccessKeyUtil {
                 } else if (fieldValue instanceof Date) {
                     builder.withClaim(fieldName, ((Date) fieldValue));
                 } else if (fieldValue instanceof DateTime) {
-                    builder.withClaim(fieldName, ((DateTime) fieldValue).ToDate());
+                    builder.withClaim(fieldName, ((DateTime) fieldValue).toDate());
                 } else if (fieldValue instanceof List<?>) {
                     builder.withClaim(fieldName, ((List<?>) fieldValue));
                 } else {
