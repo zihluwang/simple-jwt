@@ -33,7 +33,7 @@
         <jwt.version>3.18.3</jwt.version>
 
         <!--由cn.vorbote开发的插件-->
-        <project.version>3.0.0</project.version>
+        <project.version>3.0.0.ALPHA</project.version>
     </properties>
 
     <parent>
@@ -136,6 +136,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.2.0</version>
                         <configuration>
                             <excludes>
                                 <exclude>*.xml</exclude>
@@ -204,6 +205,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
                     <excludes>
                         <exclude>*.xml</exclude>
