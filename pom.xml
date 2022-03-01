@@ -21,9 +21,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/vorbote/commons</url>
-        <connection>https://github.com/vorbote/commons.git</connection>
-        <developerConnection>https://github.com/vorbote/commons</developerConnection>
+        <url>https://github.com/vorbote/simple-jwt</url>
+        <connection>git@github.com:vorbote/simple-jwt.git</connection>
+        <developerConnection>https://github.com/vorbote</developerConnection>
     </scm>
 
     <properties>
