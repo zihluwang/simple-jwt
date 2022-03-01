@@ -1,4 +1,4 @@
-## OpenSource Core
+## Simple JWT
 
 > You could also read the **CHINESE** version of [README](README_zh-CN.md)
 

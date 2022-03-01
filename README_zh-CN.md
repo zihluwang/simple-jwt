@@ -1,4 +1,4 @@
-## Open Source Core
+## Simple JWT
 
 该类库对 `com.auth0:java-jwt` 进行了简单的封装，以便于你可以在几乎不进行配置的情况下就能轻松使用 `JSON Web Token` 。
 
