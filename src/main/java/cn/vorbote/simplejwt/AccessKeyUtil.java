@@ -286,32 +286,20 @@ public class AccessKeyUtil {
     /**
      * Renew the token.
      *
-     * @param token The original token.
+     * @param token       The original token.
+     * @param expireAfter The time period (seconds) when the new token expired.
      * @return The renewed token.
      */
     @Deprecated
     public String Renew(String token, int expireAfter) {
-        final var info = this.Info(token);
-        final var map = new HashMap<String, Object>();
-        // 排除一些JWT已经定义好用处的字段
-        var keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
-        for (var e : info.getClaims().entrySet()) {
-            if (!keys.contains(e.getKey())) {
-                map.put(e.getKey(), e.getValue().asString());
-            }
-        }
-
-        var expireTimeSpan = new TimeSpan(0, 0, 0, expireAfter);
-        var audiencesList = info.getAudience();
-        var audiences = audiencesList.toArray(new String[0]);
-
-        return CreateToken(expireTimeSpan, info.getSubject(), audiences, map);
+        return Renew(token, TimeSpan.builder().seconds(expireAfter).build());
     }
 
     /**
      * Renew the token.
      *
-     * @param token The original token.
+     * @param token       The original token.
+     * @param expireAfter The time period (seconds) when the new token expired.
      * @return The renewed token.
      */
     public String Renew(String token, TimeSpan expireAfter) {
@@ -366,6 +354,7 @@ public class AccessKeyUtil {
      *
      * @param token        The user token.
      * @param requiredType The class of user.
+     * @param <T>          The type of the bean.
      * @return The user bean.
      * @throws Exception This method is using lots of methods
      *                   could cause some exception, please
