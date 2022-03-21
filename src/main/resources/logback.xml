@@ -9,7 +9,13 @@
         </encoder>
     </appender>
 
+    <appender name="STDOUT-C" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %boldMagenta(%logger{50}) %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDOUT-C"/>
     </root>
 </configuration>
