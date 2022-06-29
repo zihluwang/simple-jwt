@@ -156,7 +156,7 @@ public class AccessKeyUtil {
      *                 you don't need to pass any information.
      * @return A token string.
      */
-    public String CreateToken(TimeSpan expire, String subject, String[] audience, Map<String, Object> claims) {
+    public String createToken(TimeSpan expire, String subject, String[] audience, Map<String, Object> claims) {
         final var builder = JWT.create();
         buildBasicInfo(subject, audience, expire, builder);
         buildClaims(claims, builder);
@@ -188,7 +188,7 @@ public class AccessKeyUtil {
      * @see JWTCreator.Builder#withClaim(String, Map)
      * @see JWTCreator.Builder#withClaim(String, String)
      */
-    public String CreateTokenWithBean(TimeSpan expire, String subject, String[] audience, Object bean)
+    public String createTokenWithBean(TimeSpan expire, String subject, String[] audience, Object bean)
             throws Exception {
         final var builder = JWT.create();
         buildBasicInfo(subject, audience, expire, builder);
@@ -242,8 +242,8 @@ public class AccessKeyUtil {
      *
      * @param token The token.
      */
-    public void Verify(String token) {
-        Info(token);
+    public void verify(String token) {
+        info(token);
     }
 
     /**
@@ -262,7 +262,7 @@ public class AccessKeyUtil {
      * @throws com.auth0.jwt.exceptions.JWTVerificationException       If any of the verification steps fail
      * @see JWTVerifier#verify(String)
      */
-    public DecodedJWT Info(String token) {
+    public DecodedJWT info(String token) {
         JWTVerifier verifier;
         switch (algorithm) {
             case HS256:
@@ -291,8 +291,8 @@ public class AccessKeyUtil {
      * @return The renewed token.
      */
     @Deprecated
-    public String Renew(String token, int expireAfter) {
-        return Renew(token, TimeSpan.builder().seconds(expireAfter).build());
+    public String renew(String token, int expireAfter) {
+        return renew(token, TimeSpan.builder().seconds(expireAfter).build());
     }
 
     /**
@@ -302,8 +302,8 @@ public class AccessKeyUtil {
      * @param expireAfter The time period (seconds) when the new token expired.
      * @return The renewed token.
      */
-    public String Renew(String token, TimeSpan expireAfter) {
-        final var info = this.Info(token);
+    public String renew(String token, TimeSpan expireAfter) {
+        final var info = this.info(token);
         final var map = new HashMap<String, Object>();
         // 排除一些JWT已经定义好用处的字段
         var keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
@@ -314,7 +314,7 @@ public class AccessKeyUtil {
         }
 
         var audiences = info.getAudience().toArray(new String[0]);
-        return CreateToken(expireAfter, info.getSubject(), audiences, map);
+        return createToken(expireAfter, info.getSubject(), audiences, map);
     }
 
     /**
@@ -327,17 +327,17 @@ public class AccessKeyUtil {
      * @return A new token.
      * @throws Exception This method is using lots of methods could cause some exception, please see its
      *                   upriver methods.
-     * @see #CreateTokenWithBean(TimeSpan, String, String[], Object)
-     * @see #GetBean(String, Class)
+     * @see #createTokenWithBean(TimeSpan, String, String[], Object)
+     * @see #getBean(String, Class)
      * @see List#toArray(Object[])
      */
-    public String RenewWithBean(String token, TimeSpan expireAfter, Class<?> requiredType)
+    public String renewWithBean(String token, TimeSpan expireAfter, Class<?> requiredType)
             throws Exception {
-        final var info = this.Info(token);
-        var bean = GetBean(token, requiredType);
+        final var info = this.info(token);
+        var bean = getBean(token, requiredType);
         var audiences = info.getAudience().toArray(new String[0]);
 
-        return CreateTokenWithBean(expireAfter, info.getSubject(), audiences, bean);
+        return createTokenWithBean(expireAfter, info.getSubject(), audiences, bean);
     }
 
     /**
@@ -365,10 +365,10 @@ public class AccessKeyUtil {
      * @see Map#get(Object)
      * @see MapUtil#setFieldValue(Object, String, Object)
      */
-    public <T> T GetBean(String token, Class<T> requiredType)
+    public <T> T getBean(String token, Class<T> requiredType)
             throws Exception {
         // 创建token的解析对象
-        var tokenInfo = Info(token).getClaims();
+        var tokenInfo = info(token).getClaims();
 
         // 获取默认无参构造并创建对象
         var bean = requiredType.getConstructor().newInstance();
