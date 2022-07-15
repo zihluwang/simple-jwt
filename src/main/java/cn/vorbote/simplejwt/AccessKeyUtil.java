@@ -9,10 +9,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -71,7 +73,7 @@ public class AccessKeyUtil {
      * @param builder  The builder of this jwt.
      */
     private void buildBasicInfo(String subject, String[] audience, TimeSpan expire, JWTCreator.Builder builder) {
-        var now = DateTime.now();
+        DateTime now = DateTime.now();
 
         builder.withIssuer(issuer);
         builder.withIssuedAt(now.toDate());
@@ -104,7 +106,7 @@ public class AccessKeyUtil {
      * @return The built token.
      */
     private String buildToken(JWTCreator.Builder builder) {
-        var token = "";
+        String token;
 
         switch (algorithm) {
             case HS256:
@@ -128,27 +130,6 @@ public class AccessKeyUtil {
      * Create a new Token. All the items in claims will be set as a String into this JSON Web
      * Token.
      *
-     * @param expireAfter Specify when will the token be expired. (Unit: Second)
-     * @param subject     Specify the users will be faced.
-     * @param audience    Specify who will receive this token.
-     * @param claims      Give some info need to be transformed by token, can be null when
-     *                    you don't need to pass any information.
-     * @return A token string.
-     */
-    @Deprecated
-    public String CreateToken(int expireAfter, String subject, String[] audience, Map<String, Object> claims) {
-        var expire = new TimeSpan(0, 0, 0, expireAfter);
-        final var builder = JWT.create();
-
-        buildClaims(claims, builder);
-        buildBasicInfo(subject, audience, expire, builder);
-        return buildToken(builder);
-    }
-
-    /**
-     * Create a new Token. All the items in claims will be set as a String into this JSON Web
-     * Token.
-     *
      * @param expire   Specify when will the token be expired. (Unit: Second)
      * @param subject  Specify the users will be faced.
      * @param audience Specify who will receive this token.
@@ -157,7 +138,7 @@ public class AccessKeyUtil {
      * @return A token string.
      */
     public String createToken(TimeSpan expire, String subject, String[] audience, Map<String, Object> claims) {
-        final var builder = JWT.create();
+        final JWTCreator.Builder builder = JWT.create();
         buildBasicInfo(subject, audience, expire, builder);
         buildClaims(claims, builder);
         return buildToken(builder);
@@ -190,17 +171,17 @@ public class AccessKeyUtil {
      */
     public String createTokenWithBean(TimeSpan expire, String subject, String[] audience, Object bean)
             throws Exception {
-        final var builder = JWT.create();
+        final JWTCreator.Builder builder = JWT.create();
         buildBasicInfo(subject, audience, expire, builder);
 
-        var beanClass = bean.getClass();
-        var fields = beanClass.getDeclaredFields();
-        for (var field : fields) {
+        Class<?> beanClass = bean.getClass();
+        Field[] fields = beanClass.getDeclaredFields();
+        for (Field field : fields) {
             if (field.isAnnotationPresent(JwtIgnore.class))
                 continue;
             field.setAccessible(true);
-            var fieldName = field.getName();
-            var fieldValue = field.get(bean);
+            String fieldName = field.getName();
+            Object fieldValue = field.get(bean);
             // 跳过空数据
             if (fieldValue != null) {
                 // 经过实验，无法通过动态转换进行 withClaim 运算，因此只能一个一个进行 instanceof 运算
@@ -303,17 +284,17 @@ public class AccessKeyUtil {
      * @return The renewed token.
      */
     public String renew(String token, TimeSpan expireAfter) {
-        final var info = this.info(token);
-        final var map = new HashMap<String, Object>();
+        final DecodedJWT info = this.info(token);
+        final HashMap<String, Object> map = new HashMap<>();
         // 排除一些JWT已经定义好用处的字段
-        var keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
-        for (var e : info.getClaims().entrySet()) {
+        List<String> keys = Arrays.asList("aud", "sub", "nbf", "iss", "exp", "iat", "jti");
+        for (Map.Entry<String, Claim> e : info.getClaims().entrySet()) {
             if (!keys.contains(e.getKey())) {
                 map.put(e.getKey(), e.getValue().asString());
             }
         }
 
-        var audiences = info.getAudience().toArray(new String[0]);
+        String[] audiences = info.getAudience().toArray(new String[0]);
         return createToken(expireAfter, info.getSubject(), audiences, map);
     }
 
@@ -333,9 +314,9 @@ public class AccessKeyUtil {
      */
     public String renewWithBean(String token, TimeSpan expireAfter, Class<?> requiredType)
             throws Exception {
-        final var info = this.info(token);
-        var bean = getBean(token, requiredType);
-        var audiences = info.getAudience().toArray(new String[0]);
+        final DecodedJWT info = this.info(token);
+        Object bean = getBean(token, requiredType);
+        String[] audiences = info.getAudience().toArray(new String[0]);
 
         return createTokenWithBean(expireAfter, info.getSubject(), audiences, bean);
     }
@@ -368,16 +349,16 @@ public class AccessKeyUtil {
     public <T> T getBean(String token, Class<T> requiredType)
             throws Exception {
         // 创建token的解析对象
-        var tokenInfo = info(token).getClaims();
+        Map<String, Claim> tokenInfo = info(token).getClaims();
 
         // 获取默认无参构造并创建对象
-        var bean = requiredType.getConstructor().newInstance();
+        T bean = requiredType.getConstructor().newInstance();
 
-        var fields = requiredType.getDeclaredFields();
-        for (var field : fields) {
+        Field[] fields = requiredType.getDeclaredFields();
+        for (Field field : fields) {
             if (field.isAnnotationPresent(JwtIgnore.class))
                 continue;
-            var fieldName = field.getName();
+            String fieldName = field.getName();
             if (fieldName.equalsIgnoreCase("log") || fieldName.equalsIgnoreCase("logger"))
                 continue;
             // 根据名字创建属性并设置值
