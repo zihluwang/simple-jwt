@@ -36,7 +36,7 @@
         <jwt.version>3.19.2</jwt.version>
 
         <!--由cn.vorbote开发的插件-->
-        <project.version>3.3.2</project.version>
+        <project.version>3.3.3</project.version>
     </properties>
 
     <parent>
