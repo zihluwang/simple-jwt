@@ -34,9 +34,6 @@
         <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
         <junit.version>4.13.2</junit.version>
         <jwt.version>3.19.2</jwt.version>
-
-        <!--由cn.vorbote开发的插件-->
-        <project.version>3.4.0</project.version>
     </properties>
 
     <parent>
@@ -47,7 +44,7 @@
 
     <groupId>cn.vorbote</groupId>
     <artifactId>simple-jwt</artifactId>
-    <version>${project.version}</version>
+    <version>3.4.0</version>
     <url>https://plugins.vorbote.cn/</url>
 
     <name>VorBotE :: SimpleJWT</name>
